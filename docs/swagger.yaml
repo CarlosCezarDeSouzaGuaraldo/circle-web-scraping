@@ -1,0 +1,82 @@
+swagger: '2.0'
+info:
+  title: 'Your API Documentation'
+  version: '1.0.0'
+  description: 'API documentation for your project'
+basePath: /api/v1
+tags:
+  - name: Web Scraping
+    description: API operations for web scraping
+definitions:
+  WebScrapingSuccessResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+        example: 200
+      statusMessage:
+        type: string
+        example: success
+      message:
+        type: string
+        example: Web scraping was successful.
+      screenshot:
+        $ref: '#/definitions/Screenshot'
+  WebScrapingErrorResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        format: int32
+        example: 500
+      statusMessage:
+        type: string
+        example: fail
+      message:
+        type: string
+        example: Web scraping failed.
+  Screenshot:
+    type: object
+    properties:
+      file:
+        type: string
+        example: screenshot-2023-11-25-14h59m43s.png
+      path:
+        type: string
+        example: assets/screenshots/screenshot-2023-11-25-14h59m43s.png
+paths:
+  /web-scraping-checkout:
+    get:
+      summary: Perform web scraping for checkout
+      tags:
+        - Web Scraping
+      parameters:
+        - name: url
+          in: query
+          description: The URL to perform web scraping on
+          required: true
+          type: string
+          example: http://localhost:3000/api/v1/web-scraping-checkout
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/WebScrapingSuccessResponse'
+          examples:
+            application/json: 
+              status: 200
+              statusMessage: success
+              message: Web scraping was successful.
+              screenshot: 
+                file: screenshot-2023-11-25-14h59m43s.png
+                path: assets/screenshots/screenshot-2023-11-25-14h59m43s.png
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/WebScrapingErrorResponse'
+          examples:
+            application/json: 
+              status: 500
+              statusMessage: fail
+              message: Web scraping failed.
