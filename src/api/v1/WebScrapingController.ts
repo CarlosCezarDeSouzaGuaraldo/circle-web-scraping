@@ -8,7 +8,6 @@ router.get('/web-scraping-checkout', async (req, res) => {
         const result = await WebScrapingService.PerformWebScraping();
         res.status(result.status).json(result).end();
     } catch (error) {
-        console.error('Error during web scraping:', error);
         res.status(500).send('Internal Server Error');
     }
 });

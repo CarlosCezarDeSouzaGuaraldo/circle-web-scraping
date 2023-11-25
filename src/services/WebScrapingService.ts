@@ -21,37 +21,37 @@ export class WebScrapingService {
 
             const orderThisItemXpath = '/html/body/div[8]/div[2]/div/div/div[1]/div[2]/div[1]/div[2]/div[1]/a[1]'
             const orderThisItem = await page.$x(orderThisItemXpath)
-            await this.click(orderThisItem)
-            this.log('Order this Item')
+            await WebScrapingService.clickOn(orderThisItem)
+            WebScrapingService.log('Order this Item')
 
             await WebScrapingService.delay()
 
             const proceedToCheckoutXpath = '//*[@id="div_cart_modal_body"]/div/a[1]'
             const proceedToCheckout = await page.$x(proceedToCheckoutXpath)
-            await this.click(proceedToCheckout)
-            this.log('Proceed to Checkout')
+            await WebScrapingService.clickOn(proceedToCheckout)
+            WebScrapingService.log('Proceed to Checkout')
 
             await page.waitForNavigation()
 
             const secondProceedToCheckoutXpath = '//*[@id="main-content"]/div/div[2]/div[2]/a'
             const secondProceedToCheckout = await page.$x(secondProceedToCheckoutXpath)
-            await this.click(secondProceedToCheckout)
-            this.log('Proceed to Checkout')
+            await WebScrapingService.clickOn(secondProceedToCheckout)
+            WebScrapingService.log('Proceed to Checkout')
 
             await page.waitForNavigation()
 
             const userNameInputXpath = '//*[@id="user_name"]'
             const userNameInput = await page.$x(userNameInputXpath)
-            await this.type(userNameInput, config.SITE_EMAIL)
+            await WebScrapingService.type(userNameInput, config.SITE_EMAIL)
 
             const passwordInputXpath = '//*[@id="password"]'
             const passwordInput = await page.$x(passwordInputXpath)
-            await this.type(passwordInput, config.SITE_PASSWORD)
+            await WebScrapingService.type(passwordInput, config.SITE_PASSWORD)
 
             const loginAndCheckoutXpath = '//*[@id="main-content"]/div/div/div[2]/form[1]/div/div/div[4]/p/input'
             const loginAndCheckout = await page.$x(loginAndCheckoutXpath)
-            await this.click(loginAndCheckout)
-            this.log('Login and Checkout')
+            await WebScrapingService.clickOn(loginAndCheckout)
+            WebScrapingService.log('Login and Checkout')
 
             await page.waitForNavigation()
 
@@ -61,66 +61,90 @@ export class WebScrapingService {
             if (!shippingAddress || shippingAddress.length <= 0) {
                 await WebScrapingService.createNewShippingAddress(page)
             } else {
-                await this.click(shippingAddress)
-                this.log('Shipping Address')
+                await WebScrapingService.clickOn(shippingAddress)
+                WebScrapingService.log('Shipping Address')
             }
 
             const continueButtonXpath = '//*[@id="btn-validate-action"]'
             const continueButton = await page.$x(continueButtonXpath)
-            await this.click(continueButton)
-            this.log('Continue')
+            await WebScrapingService.clickOn(continueButton)
+            WebScrapingService.log('Continue')
 
             await WebScrapingService.delay()
 
             const deliveryOptionXpath = '//*[@id="delivery-options-stage"]/div/div/div[8]/label'
             const deliveryOption = await page.$x(deliveryOptionXpath)
-            await this.click(deliveryOption)
-            this.log('Delivery Options')
+            await WebScrapingService.clickOn(deliveryOption)
+            WebScrapingService.log('Delivery Options')
 
-            await this.click(continueButton)
-            this.log('Continue')
+            await WebScrapingService.clickOn(continueButton)
+            WebScrapingService.log('Continue')
 
             await WebScrapingService.delay()
 
             const paymentOptionXpath = '//*[@id="payment-options-stage"]/div[1]/div/div[4]/label'
             const paymentOption = await page.$x(paymentOptionXpath)
-            await this.click(paymentOption)
-            this.log('Payment Options')
+            await WebScrapingService.clickOn(paymentOption)
+            WebScrapingService.log('Payment Options')
 
-            await this.click(continueButton)
-            this.log('Continue')
+            await WebScrapingService.clickOn(continueButton)
+            WebScrapingService.log('Continue')
 
             await WebScrapingService.delay()
 
             const termsAndConditionXpath = '//*[@id="accept_terms_and_conditions"]'
             const termsAndCondition = await page.$x(termsAndConditionXpath)
-            await this.click(termsAndCondition)
-            this.log('Terms and Conditions')
+            await WebScrapingService.clickOn(termsAndCondition)
+            WebScrapingService.log('Terms and Conditions')
 
             const screenshot = await WebScrapingService.screenshot(page)
 
             await browser.close()
 
-            const response: WebScrapingServiceResponse = {
-                status: 200,
-                statusMessage: 'success',
-                message: 'Web scraping was successful.',
-                screenshot: {
-                    file: screenshot.file,
-                    path: screenshot.path
-                }
-            }
-            console.log(response);
-            return response
+            return WebScrapingService.handleResponse(screenshot)
         } catch (error) {
-            console.error('Error during web scraping:', error);
-            const response: WebScrapingServiceResponse = {
-                status: 500,
-                statusMessage: 'fail',
-                message: 'Web scraping failed.'
-            }
-            return response
+            return WebScrapingService.handleErrors(error)
         }
+    }
+
+    /**
+     * Handles the successful response from the web scraping process.
+     * Creates a response object with a success status, a success message,
+     * and includes the details of the captured screenshot.
+     * @param screenshot - The details of the captured screenshot.
+     * @returns The response object indicating a successful web scraping process.
+     */
+    private static handleResponse(screenshot: Screenshot) {
+        const response: WebScrapingServiceResponse = {
+            status: 200,
+            statusMessage: 'success',
+            message: 'Web scraping was successful.',
+            screenshot: {
+                file: screenshot.file,
+                path: screenshot.path
+            }
+        }
+        console.log(response)
+        return response
+    }
+
+    /**
+     * Handles errors that occur during the web scraping process.
+     * Logs the error to the console, creates a response object with a
+     * failure status and message, and returns the response.
+     * @param error - The error that occurred during web scraping.
+     * @returns The response object indicating a failed web scraping process.
+     */
+    private static handleErrors(error: any): WebScrapingServiceResponse {
+        console.error('Error during web scraping:')
+        console.log(error)
+
+        const response: WebScrapingServiceResponse = {
+            status: 500,
+            statusMessage: 'fail',
+            message: 'Web scraping failed.'
+        }
+        return response
     }
 
     /**
@@ -130,33 +154,33 @@ export class WebScrapingService {
     private static async createNewShippingAddress(page: Page) {
         const streetAddressInputXpath = '//*[@id="address_address1"]'
         const streetAddressInput = await page.$x(streetAddressInputXpath)
-        await this.type(streetAddressInput, '11 Leamington Street')
+        await WebScrapingService.type(streetAddressInput, '11 Leamington Street')
 
         const cityAddressInputXpath = '//*[@id="address_city"]'
         const cityAddressInput = await page.$x(cityAddressInputXpath)
-        await this.type(cityAddressInput, 'Christchurch')
+        await WebScrapingService.type(cityAddressInput, 'Christchurch')
 
         const postCodeAddressInputXpath = '//*[@id="address_post_code"]'
         const postCodeAddressInput = await page.$x(postCodeAddressInputXpath)
-        await this.type(postCodeAddressInput, '8024')
+        await WebScrapingService.type(postCodeAddressInput, '8024')
 
         const stateAddressInputXpath = '//*[@id="address_state"]'
         const stateAddressInput = await page.$x(stateAddressInputXpath)
-        await this.type(stateAddressInput, 'Canterbury')
+        await WebScrapingService.type(stateAddressInput, 'Canterbury')
 
         await page.select('#address_country', 'NZ')
 
         const saveAddressInputXpath = '//*[@id="address_form_container"]/div/input[2]'
         const saveAddressInput = await page.$x(saveAddressInputXpath)
-        await this.click(saveAddressInput)
-        this.log('Save Address')
+        await WebScrapingService.clickOn(saveAddressInput)
+        WebScrapingService.log('Save Address')
 
         await page.waitForNavigation()
 
         const shippingAddressXpath = '//*[@id="shipping-address-stage"]/div/div[1]/div/label'
         const shippingAddress = await page.$x(shippingAddressXpath)
-        await this.click(shippingAddress)
-        this.log('Shipping Address')
+        await WebScrapingService.clickOn(shippingAddress)
+        WebScrapingService.log('Shipping Address')
     }
 
     /**
@@ -218,7 +242,7 @@ export class WebScrapingService {
      * @param element - The web page element to click.
      * @returns A Promise that resolves when the click is complete.
      */
-    private static async click(element: ElementHandle<Node>[]): Promise<void> {
+    private static async clickOn(element: ElementHandle<Node>[]): Promise<void> {
         const [el] = element
         await (el as ElementHandle).click()
     }
