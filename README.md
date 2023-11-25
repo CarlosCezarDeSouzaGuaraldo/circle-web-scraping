@@ -5,7 +5,8 @@
 Circle Web Scraping is a TypeScript-based web scraping service designed to automate specific actions on a website. It utilizes Puppeteer, a headless browser automation tool, to navigate through pages, interact with elements, and capture screenshots during the web scraping process.
 
 ### Video about the web scraping realised by the system
-(upcoming)
+
+https://github.com/CarlosCezarDeSouzaGuaraldo/circle-web-scraping/assets/66181262/09ec270e-a7b5-4436-b28b-09adaa3254b9
 
 ## Getting Started
 
@@ -77,7 +78,8 @@ If the request is made successfully, you can expect this kind of following JSON 
 ```
 
 ### Screenshot taken by system
-(upcoming)
+
+![screenshot-2023-11-25-14h20m05s](https://github.com/CarlosCezarDeSouzaGuaraldo/circle-web-scraping/assets/66181262/575a6211-4b14-4c84-92cc-d8cbeeee1a3b)
 
 ### Contributing
 
